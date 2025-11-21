@@ -28,6 +28,7 @@ HF_CACHE_DIR = Path(__file__).resolve().parent / "models"
 os.environ.setdefault("HUGGINGFACE_HUB_CACHE", str(HF_CACHE_DIR))
 os.environ.setdefault("HF_HOME", str(HF_CACHE_DIR))
 HF_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+os.environ.setdefault("HF_HUB_DISABLE_SYMLINKS_WARNING", "1")
 
 
 def _sorted_frame_paths(frames_dir: Path):

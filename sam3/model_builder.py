@@ -1,11 +1,19 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates. All Rights Reserved
 
 import os
+from pathlib import Path
 from typing import Optional
 
 import torch
 import torch.nn as nn
 from huggingface_hub import hf_hub_download
+
+# Force HF cache into repo-local models dir for all imports
+_HF_CACHE_DIR = Path(__file__).resolve().parent.parent / "models"
+os.environ.setdefault("HUGGINGFACE_HUB_CACHE", str(_HF_CACHE_DIR))
+os.environ.setdefault("HF_HOME", str(_HF_CACHE_DIR))
+os.environ.setdefault("HF_HUB_DISABLE_SYMLINKS_WARNING", "1")
+_HF_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 from iopath.common.file_io import g_pathmgr
 from sam3.model.decoder import (
     TransformerDecoder,
@@ -641,8 +649,13 @@ def download_ckpt_from_hf():
     SAM3_MODEL_ID = "facebook/sam3"
     SAM3_CKPT_NAME = "sam3.pt"
     SAM3_CFG_NAME = "config.json"
-    _ = hf_hub_download(repo_id=SAM3_MODEL_ID, filename=SAM3_CFG_NAME)
-    checkpoint_path = hf_hub_download(repo_id=SAM3_MODEL_ID, filename=SAM3_CKPT_NAME)
+    # Force HF cache into repo-local models dir (works cross-process)
+    cache_root = Path(__file__).resolve().parent.parent / "models"
+    os.environ.setdefault("HUGGINGFACE_HUB_CACHE", str(cache_root))
+    os.environ.setdefault("HF_HOME", str(cache_root))
+    cache_root.mkdir(parents=True, exist_ok=True)
+    _ = hf_hub_download(repo_id=SAM3_MODEL_ID, filename=SAM3_CFG_NAME, cache_dir=str(cache_root))
+    checkpoint_path = hf_hub_download(repo_id=SAM3_MODEL_ID, filename=SAM3_CKPT_NAME, cache_dir=str(cache_root))
     return checkpoint_path
 
 

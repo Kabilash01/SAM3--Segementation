@@ -44,6 +44,7 @@ HF_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 # Ensure HF downloads land in the local models folder
 os.environ.setdefault("HUGGINGFACE_HUB_CACHE", str(HF_CACHE_DIR))
 os.environ.setdefault("HF_HOME", str(HF_CACHE_DIR))
+os.environ.setdefault("HF_HUB_DISABLE_SYMLINKS_WARNING", "1")
 
 # ------------------------------
 # Utility helpers
