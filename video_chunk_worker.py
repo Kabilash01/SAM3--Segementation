@@ -24,6 +24,12 @@ from sam3.model_builder import build_sam3_video_predictor
 from sam3.visualization_utils import render_masklet_frame
 
 
+HF_CACHE_DIR = Path(__file__).resolve().parent / "models"
+os.environ.setdefault("HUGGINGFACE_HUB_CACHE", str(HF_CACHE_DIR))
+os.environ.setdefault("HF_HOME", str(HF_CACHE_DIR))
+HF_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
+
 def _sorted_frame_paths(frames_dir: Path):
     frames = list(frames_dir.glob("*.jpg"))
     try:

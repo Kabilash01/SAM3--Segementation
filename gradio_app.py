@@ -34,11 +34,16 @@ VIDEO_PREDICTOR = None
 TEMP_IMAGE_PATH = Path(__file__).resolve().parent / "temp.jpg"
 GRADIO_TEMP = Path(__file__).resolve().parent / "temp_videos" / "gradio_temp"
 TEMP_VIDEO_ROOT = Path(__file__).resolve().parent / "temp_video"
+HF_CACHE_DIR = Path(__file__).resolve().parent / "models"
 
 # Keep Gradio uploads out of the default OS temp (e.g., AppData) by redirecting its temp dir.
 os.environ.setdefault("GRADIO_TEMP_DIR", str(GRADIO_TEMP))
 GRADIO_TEMP.mkdir(parents=True, exist_ok=True)
 TEMP_VIDEO_ROOT.mkdir(parents=True, exist_ok=True)
+HF_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+# Ensure HF downloads land in the local models folder
+os.environ.setdefault("HUGGINGFACE_HUB_CACHE", str(HF_CACHE_DIR))
+os.environ.setdefault("HF_HOME", str(HF_CACHE_DIR))
 
 # ------------------------------
 # Utility helpers
@@ -219,6 +224,9 @@ def load_models(progress=gr.Progress(track_tqdm=True)):
 
     # To avoid bf16 conv bias mismatches in this app, default to full precision for the tracker unless the user overrides.
     os.environ.setdefault("SAM3_DISABLE_BF16", "1")
+    # Ensure HF cache points to the repo-local models folder
+    os.environ["HUGGINGFACE_HUB_CACHE"] = str(HF_CACHE_DIR)
+    os.environ["HF_HOME"] = str(HF_CACHE_DIR)
 
     if IMAGE_MODEL is None:
         progress(0.1, desc="Loading image model")
