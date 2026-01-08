@@ -157,3 +157,9 @@ temp_video/
 temp_videos/
 *.masked.jpg
 gradio_temp/
+
+# Model files and directories
+models/
+*.pt
+*.ckpt
+*.pth
